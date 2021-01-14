@@ -1,5 +1,6 @@
 import docker
 from tabulate import tabulate
+from datetime import datetime
 
 def container_info(client):
     container_data = []
@@ -13,30 +14,34 @@ def container_info(client):
         def get_container_image():
             return attrs["Config"]["Image"]
 
-        # TODO: Calculate up time in hours
+        # Fuck Timezones
         def get_container_created():
-            return attrs["Created"]
+            today_time = datetime.strptime(datetime.strftime(datetime.today(), '%Y-%m-%dT%H:%M:%S'), "%Y-%m-%dT%H:%M:%S")
+            create_time = datetime.strptime(attrs["Created"].split(".")[0], "%Y-%m-%dT%H:%M:%S")
+            created = abs(today_time - create_time)
+            # if created.days >= 1:
+            #     return f"{created.days} days ago"
+            return created
 
         # TODO: Calculate status time if up
         # from ["State"]["StartedAt"], ["State"]["FinishedAt"]
         def get_container_status():
             return attrs["State"]["Status"]
 
+        # TODO: fix port to be HOSTIP:HOSTPORT->EXPOSED
         def get_container_ports():
             ports = attrs["NetworkSettings"]["Ports"]
             hosted = []
             for mappings in ports.values():
                 if mappings != None:
                     for mapping in mappings:
-                        hosted.append(f"{mapping['HostIp']}->{mapping['HostPort']}")
+                        hosted.append(f"{mapping['HostIp']}:{mapping['HostPort']}")
 
             formatted_ports = ""
             for hos in hosted:
                 formatted_ports += f"{hos}\xa0"
             for exp in ports.keys():
                 formatted_ports += f"{exp}\xa0"
-
-
             return formatted_ports
 
         def get_container_name():
