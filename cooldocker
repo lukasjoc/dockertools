@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/bin/python3
 
 import docker
 from tabulate import tabulate
@@ -105,7 +105,7 @@ def vol_info(client):
 
 
 if __name__ == "__main__":
-    cl = docker.from_env(max_pool_size=15)
+    cl = docker.from_env()
 
     container_data, container_cols = container_info(client=cl)
     print(f"[{colored(str(len(container_data)), color='cyan')}] {colored('CONTAINER', color='cyan')}:")
