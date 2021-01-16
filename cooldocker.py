@@ -18,7 +18,6 @@ def container_info(client):
         def get_container_ports():
             ports = attrs["NetworkSettings"]["Ports"]
             formatted_ports = ""
-            hosted = []
             for port, mapping in ports.items():
                 if mapping != None:
                     for item in mapping:
