@@ -1,3 +1,5 @@
+#!/usr/local/bin/python3
+
 import docker
 from tabulate import tabulate
 from termcolor import colored
