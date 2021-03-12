@@ -42,7 +42,7 @@ def container_info(client):
             attrs["State"]["Status"],
             get_container_ports(),
             attrs["Name"][1:],
-            get_container_ip()
+            get_container_ip(),
         ])
 
     container_cols = [ "CONTAINER ID", "IMAGE", "CREATED", "STATUS", "PORTS", "NAMES", "IP ADDRESS" ]
@@ -105,22 +105,24 @@ def vol_info(client):
 
 
 if __name__ == "__main__":
-    cl = docker.from_env()
+    try:
+        cl = docker.from_env()
+        container_data, container_cols = container_info(client=cl)
+        print(f"[{colored(str(len(container_data)), color='cyan')}] {colored('CONTAINER', color='cyan')}:")
+        print(tabulate(container_data, headers=container_cols))
 
-    container_data, container_cols = container_info(client=cl)
-    print(f"[{colored(str(len(container_data)), color='cyan')}] {colored('CONTAINER', color='cyan')}:")
-    print(tabulate(container_data, headers=container_cols))
+        image_data, image_cols = image_info(client=cl)
+        print(f"\n[{colored(str(len(image_data)), color='green')}] {colored('IMAGES', color='green')}:")
+        print(tabulate(image_data, headers=image_cols))
 
-    image_data, image_cols = image_info(client=cl)
-    print(f"\n[{colored(str(len(image_data)), color='green')}] {colored('IMAGES', color='green')}:")
-    print(tabulate(image_data, headers=image_cols))
+        net_data, net_cols = net_info(client=cl)
+        print(f"\n[{colored(str(len(net_data)), color='blue')}] {colored('NETS', color='blue')}:")
+        print(tabulate(net_data, headers=net_cols))
 
-    net_data, net_cols = net_info(client=cl)
-    print(f"\n[{colored(str(len(net_data)), color='blue')}] {colored('NETS', color='blue')}:")
-    print(tabulate(net_data, headers=net_cols))
-
-    vol_data, vol_cols = vol_info(client=cl)
-    if len(vol_data) >= 1:
-        print(f"\n[{colored(str(len(net_data)), color='yellow')}] {colored('VOLUMES', color='yellow')}:")
-        print(tabulate(vol_data, headers=vol_cols))
+        vol_data, vol_cols = vol_info(client=cl)
+        if len(vol_data) >= 1:
+            print(f"\n[{colored(str(len(net_data)), color='yellow')}] {colored('VOLUMES', color='yellow')}:")
+            print(tabulate(vol_data, headers=vol_cols))
+    except Exception as err:
+        print(f"Docker Engine/Daemon not running. Please start it. ERR: {err}")
 
