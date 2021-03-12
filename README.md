@@ -3,5 +3,5 @@
 > tools for docker
 
 Reqs: \
-pip install docker, termcolor, tabulate
+pip install docker termcolor tabulate
 
