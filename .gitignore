@@ -4,3 +4,7 @@
 .DS_Store
 tags
 __pycache__/
+build/
+*.so
+*.c
+*.o
