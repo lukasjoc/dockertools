@@ -4,7 +4,7 @@ import docker
 from tabulate import tabulate
 from termcolor import colored
 
-cdef __format_timedelta(time_str, pattern="%Y-%m-%dT%H:%M:%S"):
+def __format_timedelta(time_str, pattern="%Y-%m-%dT%H:%M:%S"):
     from datetime import timedelta, datetime
     delta = abs(datetime.strptime(datetime.strftime(datetime.today(), pattern), pattern)
                 - datetime.strptime(time_str.split(".")[0], pattern))
@@ -12,7 +12,7 @@ cdef __format_timedelta(time_str, pattern="%Y-%m-%dT%H:%M:%S"):
         return f"> {delta.days} days ago"
     return f"{str(timedelta(seconds=int(delta.total_seconds())-3600))} ago"
 
-cdef container_info(client):
+def container_info(client):
     container_data = []
     for container in client.containers.list():
         attrs = container.attrs
@@ -48,7 +48,7 @@ cdef container_info(client):
     container_cols = [ "CONTAINER ID", "IMAGE", "CREATED", "STATUS", "PORTS", "NAMES", "IP ADDRESS" ]
     return container_data, container_cols
 
-cdef image_info(client):
+def image_info(client):
     image_data = []
     for image in client.images.list(filters={"dangling": False}):
         attrs = image.attrs
@@ -73,7 +73,7 @@ cdef image_info(client):
     image_cols = [ "REPOSITORY", "TAG", "CREATED", "SIZE(MiB)" ]
     return image_data, image_cols
 
-cdef net_info(client):
+def net_info(client):
     net_data = []
     for net in client.networks.list(filters={"dangling": True}):
         attrs = net.attrs
@@ -90,7 +90,7 @@ cdef net_info(client):
     net_cols = [ "NET ID", "NAME", "DRIVER", "CREATED", "SCOPE", "INTERNAL", "ATTACHABLE"]
     return net_data, net_cols
 
-cdef vol_info(client):
+def vol_info(client):
     vol_data = []
     for vol in client.volumes.list():
         attrs = vol.attrs
