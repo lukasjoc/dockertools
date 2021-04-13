@@ -35,11 +35,19 @@ cdef container_info(client):
                 network_name = attrs["HostConfig"]["NetworkMode"]
                 return attrs["NetworkSettings"]["Networks"][network_name]["IPAddress"]
 
+        def get_docker_status():
+            status = attrs["State"]["Status"]
+            if "Health" in attrs["State"]:
+                return f"{status} ({attrs['State']['Health']['Status']})"
+            return status
+
+
+
         container_data.append([
             attrs["Config"]["Hostname"],
             attrs["Config"]["Image"],
             __format_timedelta(time_str=attrs["Created"]),
-            attrs["State"]["Status"],
+            get_docker_status(),
             get_container_ports(),
             attrs["Name"][1:],
             get_container_ip(),
